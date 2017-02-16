@@ -139,7 +139,7 @@ public class ArrayDeque<Item> {
 	}
 	
 	//java visualiser tests
-	/*
+	
 
    public static void main(String[] args) {
       	ArrayDeque<Integer> ad = new ArrayDeque<Integer>();
@@ -148,5 +148,5 @@ public class ArrayDeque<Item> {
       	ad.addLast(5);
       	ad.addFirst(1);
       }
-      */
+      
 }

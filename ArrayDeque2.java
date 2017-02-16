@@ -1,128 +1,102 @@
-public class ArrayDeque<Item> {
+public class ArrayDeque2<Item> {
 	private Item[] items;
 	private int front;
 	private int back;
 	private int size;
-	private int rfactor = 3;
+	private int fill;
+	private final int rfactor = 3;
 
-	public ArrayDeque() {
+	public ArrayDeque2() {
 		items = (Item []) new Object[5];
-		size = 0;
+		size = 5;
 		front = 0;
-		back = 1;
+		back = -1;
+		fill = 0;
 	}
 
 	private void resize(int capacity) {
 		Item[] newArray = (Item []) new Object[capacity];
-		if (front >= back) {
-			System.arraycopy(items, front, newArray, 1, size-front);
-			System.arraycopy(items, 0, newArray,size-front+1, front);
-         items = newArray;
-         front = 0;
-         back = size+1;
-		} else {
-			System.arraycopy(items, front, newArray, 0, size);
-         items = newArray;
-         back = size+1;
+		int index = 0;
+		back += 1;
+		int trueBack = Math.floorMod(back, size);
+
+		while (back != front) {
+			newArray[index] = items[trueBack];
+			back += 1;
+			index += 1;
+			trueBack = Math.floorMod(back, size);
 		}
+		items = newArray;
+		front = size;
+		back = -1;
+		size = capacity;
 	}
 
 	public void addFirst(Item item){
-		if (items[front] == null){
-			items[front] = item;
-			size += 1;
-		} else if (front != back) {
-			if (front == 0) {
-				front = items.length - 1;
-				items[front] = item;
-				size += 1;
-			} else {
-				front -= 1;
-				items[front] = item;
-				size += 1;
-			}
-		} else {	
-			resize(size*rfactor);
-			items[0] = item;
+		if (fill == size) {
+			resize(size * rfactor);
 		}
+		items[front] = item;
+		front += 1;
+		fill += 1;
 	}
 
 	public void addLast(Item item) {
-		if (items[back] == null) {
-			items[back] = item;
-			size += 1;
-			if (back == items.length - 1) {
-				back = 0;
-			} else {
-				back += 1;
-			}
-		} else if (back - 1 == front) {
-			resize(size*rfactor);
-         items[size] = item;
-         size += 1;
+		if (fill == size) {
+			resize(size * rfactor);
 		}
+		int trueBack = Math.floorMod(back, size);
+		items[trueBack] = item;
+		back -= 1;
+		fill += 1;
 	}
 
 	public boolean isEmpty(){
 		if (size == 0) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	public int size() {
-		return size;
+		return this.size;
 	}
 
 	public void printDeque(){
 		int index = 0;
-		while (index < items.length-1) {
+		while (index <= items.length - 1) {
 			System.out.print(" " + items[index]);
 			index ++;
 		}
-
+		System.out.println();
 	}
 
 	public Item removeFirst(){
-		if (front + 1 >= items.length) {
-			front = 0;
-			Item item = items[front];
-			items[front] = null;
-			size -= 1;
-			return item;
-		} 
-		Item item = items[front + 1];
-		items[front + 1] = null;
-		front += 1;
-		size -= 1;
+		if (front - 1 < 0) {
+			return null;
+		}
+		front -= 1;
+		Item item = items[front];
+		items[front] = null;
+		fill -= 1;
+
 		return item;
 	}
 
 	public Item removeLast(){
-		if (back - 1 >= items.length) {
-			back = 0;
-			Item item = items[back];
-			items[back] = null;
-			size -= 1;
-			return item;
-		} 
-		Item item = items[back - 1];
-		items[back - 1] = null;
-		back -= 1;
-		size -= 1;
+		if (fill == 0) {
+			return null;
+		}
+		back += 1;
+		int trueBack = Math.floorMod(back, size);
+		Item item = items[trueBack];
+		items[trueBack] = null;
+		fill -= 1;
+
 		return item;
 	}
 
 	public Item get(int index){
-		while (items[index] == null) {
-			if (index > items.length - 1) {
-				index = front;
-			} else {
-				index += 1;
-			}
-		}
-
 		return items[index];
 	}
 	
@@ -134,8 +108,22 @@ public class ArrayDeque<Item> {
       ad.addFirst(4);
       ad.addLast(5);
       ad.addFirst(6);
-
-   }	
-   
-
+      ad.addLast(7);
+      ad.addFirst(8);
+      ad.printDeque();
+      ad.removeLast();
+      ad.printDeque();
+      ad.addLast(9);
+      ad.printDeque();
+      System.out.println(ad.removeLast());
+      ad.printDeque();
+      System.out.println(ad.removeLast());
+      ad.printDeque();
+      System.out.println(ad.removeLast());
+      ad.printDeque();
+      System.out.println(ad.removeFirst());
+      ad.printDeque();
+      ad.addFirst(11);
+      ad.printDeque();
+   }
 }
